@@ -11,7 +11,7 @@ fn read_grid() -> Vec<Vec<char>> {
     lines
 }
 
-fn part_one(grid: Vec<Vec<char>>) -> i32 {
+fn part_one(grid: &Vec<Vec<char>>) -> i32 {
     let rows = grid.len() as i32;
     let cols = grid[0].len() as i32;
 
@@ -52,7 +52,40 @@ fn part_one(grid: Vec<Vec<char>>) -> i32 {
     res
 }
 
+fn is_direction_valid(
+    grid: &Vec<Vec<char>>,
+    (row, col): (i32, i32),
+    direction: (i32, i32),
+) -> bool {
+    let (row_direction, col_direction) = direction;
+
+    let word: String = (-1..=1)
+        .map(|step| (row + step * row_direction, col + step * col_direction))
+        .map(|(cell_x, cell_y)| grid[cell_x as usize][cell_y as usize])
+        .collect();
+
+    return word == "MAS" || word == "SAM";
+}
+
+fn part_two(grid: &Vec<Vec<char>>) -> i32 {
+    let rows = grid.len() as i32;
+    let cols = grid.len() as i32;
+
+    let directions = [(-1, 1), (1, 1)]; // The two perpendicular directions for the X
+    let mut res = 0;
+    for (middle_row, middle_col) in (1..(rows - 1)).cartesian_product(1..(cols - 1)) {
+        if directions
+            .iter()
+            .all(|&direction| is_direction_valid(&grid, (middle_row, middle_col), direction))
+        {
+            res += 1
+        }
+    }
+
+    res
+}
+
 fn main() {
     let grid = read_grid();
-    println!("{}", part_one(grid));
+    println!("{} {}", part_one(&grid), part_two(&grid));
 }
