@@ -42,23 +42,22 @@ fn parse_input() -> Option<GridWalk> {
         .map(|line| line.chars().collect::<Vec<char>>())
         .collect();
 
-    for row in 0..grid.len() {
-        for col in 0..grid[row].len() {
-            if let Some(direction) = match grid[row][col] {
-                '^' => Some(Direction::Up),
-                '>' => Some(Direction::Right),
-                'v' => Some(Direction::Down),
-                '<' => Some(Direction::Left),
-                _ => None,
-            } {
-                return Some(GridWalk {
-                    grid,
-                    pos: GuardPosition {
-                        direction,
-                        coordinates: (row as i32, col as i32),
-                    },
-                });
-            }
+    let (rows, cols) = dims(&grid);
+    for (row, col) in (0..rows).cartesian_product(0..cols) {
+        if let Some(direction) = match grid[row][col] {
+            '^' => Some(Direction::Up),
+            '>' => Some(Direction::Right),
+            'v' => Some(Direction::Down),
+            '<' => Some(Direction::Left),
+            _ => None,
+        } {
+            return Some(GridWalk {
+                grid,
+                pos: GuardPosition {
+                    direction,
+                    coordinates: (row as i32, col as i32),
+                },
+            });
         }
     }
 
