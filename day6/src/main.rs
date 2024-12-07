@@ -1,5 +1,8 @@
 use itertools::Itertools;
-use std::{collections::HashSet, io};
+use std::{
+    collections::HashSet,
+    io::{self},
+};
 
 type Coordinates = (i32, i32);
 type Grid = Vec<Vec<char>>;
@@ -34,7 +37,7 @@ fn dims(grid: &Vec<Vec<char>>) -> (usize, usize) {
     (grid.len(), grid[0].len())
 }
 
-fn parse_input() -> Option<GridWalk> {
+fn parse_input() -> std::result::Result<GridWalk, ()> {
     let grid: Vec<Vec<char>> = io::stdin()
         .lines()
         .map(|line| line.unwrap())
@@ -51,7 +54,7 @@ fn parse_input() -> Option<GridWalk> {
             '<' => Some(Direction::Left),
             _ => None,
         } {
-            return Some(GridWalk {
+            return Ok(GridWalk {
                 grid,
                 pos: GuardPosition {
                     direction,
@@ -61,7 +64,7 @@ fn parse_input() -> Option<GridWalk> {
         }
     }
 
-    None
+    Err(())
 }
 
 impl GridWalk {
@@ -120,12 +123,12 @@ fn part_one(mut grid_walk: GridWalk) -> usize {
 }
 
 fn causes_infinite_loop(mut grid_walk: GridWalk) -> bool {
-    let mut visited_positions: HashSet<GuardPosition> = HashSet::new();
+    let mut visited_guard_positions: HashSet<GuardPosition> = HashSet::new();
     loop {
-        if visited_positions.contains(&grid_walk.pos) {
+        if visited_guard_positions.contains(&grid_walk.pos) {
             return true;
         }
-        visited_positions.insert(grid_walk.pos);
+        visited_guard_positions.insert(grid_walk.pos);
         match grid_walk.step_forward() {
             StepResult::GridEscaped => {
                 return false;
