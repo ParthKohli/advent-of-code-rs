@@ -4,7 +4,7 @@ use std::io;
 
 #[derive(Clone, Copy, PartialEq, Debug)]
 enum BlockType {
-    Filled(u64), // File index
+    Occupied(u64), // File index
     Free,
 }
 
@@ -63,7 +63,7 @@ fn part_two(disk_map: &String) -> u64 {
         let block_size = block_size.to_digit(10).unwrap() as u64;
         blocks.push(Block {
             block_type: match i % 2 {
-                0 => BlockType::Filled((i / 2) as u64),
+                0 => BlockType::Occupied((i / 2) as u64),
                 1 => BlockType::Free,
                 _ => panic!(),
             },
@@ -89,7 +89,7 @@ fn part_two(disk_map: &String) -> u64 {
             if first_suitable_block.starting_index < occupied_block.starting_index {
                 found_match = true;
                 match occupied_block.block_type {
-                    BlockType::Filled(file_index) => {
+                    BlockType::Occupied(file_index) => {
                         checksum += file_index
                             * range_sum(
                                 first_suitable_block.starting_index,
@@ -104,7 +104,7 @@ fn part_two(disk_map: &String) -> u64 {
         }
         if !found_match {
             match occupied_block.block_type {
-                BlockType::Filled(file_index) => {
+                BlockType::Occupied(file_index) => {
                     checksum += file_index
                         * range_sum(
                             occupied_block.starting_index,
