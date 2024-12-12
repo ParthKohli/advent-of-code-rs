@@ -1,3 +1,16 @@
+/*
+Idea:
+1.  Scale out the coordinates in the input grid by a factor of 2.
+    That is, row i and column j are indexed by 2*i and 2*j respectively.
+2.  Fences are at "half" distance from cells in the original grid. After the above
+    scaling operation, fences have exactly one odd coordinate in their index.
+3.  A "vertical" fence has an odd first coordinate; a "horizontal" fence has an odd second coordinate.
+3.  A fence side is a connected component in the following graph:
+    Two fences are connected with an edge iff:
+    - They are adjacent in the orientation of the fence (implemented by the boolean parity_compatible based on idea #3).
+    - They are neighbouring to a pair of neighbours in the region.
+*/
+
 use itertools::Itertools;
 use std::{
     collections::{BTreeSet, HashSet, VecDeque},
