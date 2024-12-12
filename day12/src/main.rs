@@ -1,8 +1,6 @@
-use core::num;
 use itertools::Itertools;
 use std::{
     collections::{BTreeSet, HashSet, VecDeque},
-    hash::Hash,
     io,
 };
 
@@ -22,20 +20,17 @@ struct RegionSpec {
     region_cells: BTreeSet<Cell>,
 }
 
-const DIRECTIONS: [(i32, i32); 4] = [(-1, 0), (0, -1), (1, 0), (0, 1)];
+const DIRECTIONS: [(i32, i32); 4] = [(-2, 0), (0, -2), (2, 0), (0, 2)];
+const HALF_DIRECTIONS: [(i32, i32); 4] = [(-1, 0), (0, -1), (1, 0), (0, 1)];
 
-fn neighbours(coordinates: (i32, i32), scaled: bool) -> Vec<(i32, i32)> {
-    match scaled {
-        true => DIRECTIONS
-            .iter()
-            .map(|(x, y)| (2 * x, 2 * y))
-            .map(|(dx, dy)| (coordinates.0 + dx, coordinates.1 + dy))
-            .collect(),
-        false => DIRECTIONS
-            .iter()
-            .map(|(dx, dy)| (coordinates.0 + dx, coordinates.1 + dy))
-            .collect(),
+fn neighbours(coordinates: (i32, i32), half_moves: bool) -> Vec<(i32, i32)> {
+    match half_moves {
+        false => DIRECTIONS,
+        true => HALF_DIRECTIONS,
     }
+    .iter()
+    .map(|(dx, dy)| (coordinates.0 + dx, coordinates.1 + dy))
+    .collect()
 }
 
 impl RegionSpec {
@@ -62,7 +57,6 @@ impl RegionSpec {
                 side_fences.push(fence);
                 let (fence_row, fence_col) = fence;
                 for (d_row, d_col) in DIRECTIONS {
-                    let (d_row, d_col) = (d_row * 2, d_col * 2);
                     let parity_compatible = (d_col == 0) == (fence_row % 2 == 0);
                     if !parity_compatible {
                         continue;
@@ -71,20 +65,20 @@ impl RegionSpec {
                     let next_col: i32 = fence_col + d_col;
 
                     let current_region_neighbours: HashSet<(i32, i32)> =
-                        neighbours((fence_row, fence_col), false)
+                        neighbours((fence_row, fence_col), true)
                             .into_iter()
                             .filter(|neighbour| self.region_cells.contains(&neighbour))
                             .collect::<HashSet<_>>();
 
                     let next_region_neighbours: HashSet<(i32, i32)> =
-                        neighbours((next_row, next_col), false)
+                        neighbours((next_row, next_col), true)
                             .into_iter()
                             .filter(|neighbour| self.region_cells.contains(&neighbour))
                             .collect::<HashSet<_>>();
 
                     let mut region_compatible = false;
                     for current_region_neighbour in current_region_neighbours {
-                        let second_degree_neighbours = neighbours(current_region_neighbour, true);
+                        let second_degree_neighbours = neighbours(current_region_neighbour, false);
                         let second_degree_neighbours: HashSet<(i32, i32)> =
                             HashSet::from_iter(second_degree_neighbours);
                         if !next_region_neighbours.is_disjoint(&second_degree_neighbours) {
@@ -130,11 +124,11 @@ fn calculate_prices(grid: &Grid) -> (u64, u64) {
     let mut part_one_price = 0;
     let mut part_two_price = 0;
     for (row, col) in (0..rows).cartesian_product(0..cols) {
-        let (row, col) = (row as i32, col as i32);
+        let region_char = grid.raw_grid[row as usize][col as usize];
+        let (row, col) = (row as i32 * 2, col as i32 * 2);
         if visited.contains(&(row, col)) {
             continue;
         }
-        let region_char = grid.raw_grid[row as usize][col as usize];
         let mut region_queue: VecDeque<Cell> = VecDeque::from([(row, col)]);
         let mut region_spec: RegionSpec = Default::default();
         while !region_queue.is_empty() {
@@ -145,23 +139,22 @@ fn calculate_prices(grid: &Grid) -> (u64, u64) {
             visited.insert(cell);
             region_spec.area += 1;
             let (cell_row, cell_col) = cell;
-            region_spec
-                .region_cells
-                .insert((2 * cell_row, 2 * cell_col));
+            region_spec.region_cells.insert((cell_row, cell_col));
             for (d_row, d_col) in DIRECTIONS {
-                let next_row: i32 = cell_row as i32 + d_row;
-                let next_col: i32 = cell_col as i32 + d_col;
+                let next_row: i32 = cell_row + d_row;
+                let next_col: i32 = cell_col + d_col;
                 if next_row >= 0
-                    && next_row < rows as i32
+                    && next_row < 2 * rows as i32
                     && next_col >= 0
-                    && next_col < cols as i32
-                    && grid.raw_grid[next_row as usize][next_col as usize] == region_char
+                    && next_col < 2 * cols as i32
+                    && grid.raw_grid[(next_row / 2) as usize][(next_col / 2) as usize]
+                        == region_char
                 {
                     region_queue.push_back((next_row, next_col));
                 } else {
                     region_spec.perimeter += 1;
-                    let fence_cell: (i32, i32) =
-                        (cell_row as i32 * 2 + d_row, cell_col as i32 * 2 + d_col);
+                    // Fence cells are at half distance
+                    let fence_cell = (cell_row as i32 + d_row / 2, cell_col as i32 + d_col / 2);
                     region_spec.fence_cells.insert(fence_cell);
                 }
             }
