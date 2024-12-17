@@ -187,10 +187,9 @@ fn search(idx: u64, so_far: u64, expected: &Vec<u8>) -> Option<u64> {
 }
 
 fn main() {
-    let vm = parse();
-    println!(
-        "{:?} {:?}",
-        part_one(vm.clone()),
-        search(0, 0, &vm.raw_instructions.into_iter().rev().collect())
-    );
+    let mut vm = parse();
+    let part_one = part_one(vm.clone());
+    let part_two = search(0, 0, &vm.raw_instructions.iter().rev().cloned().collect()).unwrap();
+    assert!(is_stable(&mut vm, part_two));
+    println!("{:?} {:?}", part_one, part_two);
 }
