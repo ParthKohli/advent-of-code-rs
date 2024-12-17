@@ -162,7 +162,7 @@ fn is_stable(vm: &mut VM, a_register: u64) -> bool {
 //     B = B ^ 7
 //     A = A >> 3
 //     B = B ^ C
-//     out(B)
+//     out(B % 8)
 fn search(idx: u64, so_far: u64, expected: &Vec<u8>) -> Option<u64> {
     if idx == expected.len() as u64 {
         return Some(so_far);
