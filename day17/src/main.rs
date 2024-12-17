@@ -145,7 +145,7 @@ fn part_one(mut vm: VM) -> String {
     vm.run().into_iter().join(",")
 }
 
-fn is_stable(vm: &mut VM, a_register: u64) -> bool {
+fn is_stable(mut vm: VM, a_register: u64) -> bool {
     vm.a = a_register;
     vm.b = 0;
     vm.c = 0;
@@ -186,10 +186,14 @@ fn search(idx: u64, so_far: u64, expected: &Vec<u8>) -> Option<u64> {
     min_result
 }
 
+fn part_two(raw_instructions: Vec<u8>) -> u64 {
+    search(0, 0, &raw_instructions.iter().rev().cloned().collect()).unwrap()
+}
+
 fn main() {
-    let mut vm = parse();
-    let part_one = part_one(vm.clone());
-    let part_two = search(0, 0, &vm.raw_instructions.iter().rev().cloned().collect()).unwrap();
-    assert!(is_stable(&mut vm, part_two));
+    let initial_vm = parse();
+    let part_one = part_one(initial_vm.clone());
+    let part_two = part_two(initial_vm.raw_instructions.clone());
+    assert!(is_stable(initial_vm, part_two));
     println!("{:?} {:?}", part_one, part_two);
 }
