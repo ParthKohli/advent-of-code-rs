@@ -1,0 +1,9 @@
+z31 jdr
+z22 gjh
+z08 ffj
+dwp kfm
+
+["z31", "jdr", "z22", "gjh", "z08", "ffj", "dwp", "kfm"]
+
+Sum = A xor B xor C_in
+C_out = (A and B) | (C_in and (A xor B))
