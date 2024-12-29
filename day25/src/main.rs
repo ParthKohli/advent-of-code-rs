@@ -22,8 +22,8 @@ fn parse_input() -> LocksAndKeys {
             break;
         }
         let mut seq: Seq = Vec::new();
-        for column in 0..5 as usize {
-            let num_pins = (0..6 as usize)
+        for column in 0..5_usize {
+            let num_pins = (0..6_usize)
                 .map(|row| grid[row][column])
                 .filter(|&c| c == '#')
                 .count();
