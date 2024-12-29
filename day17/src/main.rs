@@ -57,7 +57,7 @@ impl VM {
         let mut output: Option<u8> = None;
         match instruction.opcode {
             0 => {
-                self.a = self.a >> operand_value;
+                self.a >>= operand_value;
             }
             1 => {
                 self.b ^= operand_value;
@@ -150,7 +150,7 @@ fn is_stable(mut vm: VM, a_register: u64) -> bool {
     vm.b = 0;
     vm.c = 0;
     vm.ip = 0;
-    return vm.run() == vm.raw_instructions;
+    vm.run() == vm.raw_instructions
 }
 
 // For this, I had to translate to pseudocode and observed that it operates
@@ -168,7 +168,7 @@ fn search(idx: u64, so_far: u64, expected: &Vec<u8>) -> Option<u64> {
         return Some(so_far);
     }
     let mut min_result: Option<u64> = None;
-    for next_chunk in 0..8 as u8 {
+    for next_chunk in 0..8_u8 {
         let candidate = so_far + ((next_chunk as u64) << (3 * (expected.len() as u64 - idx - 1)));
         let scaled_candidate = candidate >> (3 * (expected.len() as u64 - idx - 1));
         if next_chunk ^ ((scaled_candidate >> (next_chunk ^ 7)) & 7) as u8 != expected[idx as usize]
