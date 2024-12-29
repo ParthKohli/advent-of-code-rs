@@ -85,7 +85,7 @@ fn find_shortcuts(grid: &Grid, middle_path_len: i32) -> i32 {
     let end_distances = bfs(grid, grid.end);
     let old_distance = start_distances[&grid.end];
     let mut saved_distances_count: BTreeMap<i32, i32> = BTreeMap::new();
-    for (start_row, start_col) in (0..grid.dims.rows as i32).cartesian_product(0..grid.dims.cols) {
+    for (start_row, start_col) in (0..grid.dims.rows).cartesian_product(0..grid.dims.cols) {
         for (end_row, end_col) in (start_row - middle_path_len..=start_row + middle_path_len)
             .cartesian_product(start_col - middle_path_len..=start_col + middle_path_len)
         {
