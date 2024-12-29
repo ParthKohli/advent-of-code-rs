@@ -2,7 +2,7 @@ use itertools::Itertools;
 use std::io;
 
 fn read_input() -> Vec<Vec<i32>> {
-    return io::stdin()
+    io::stdin()
         .lines()
         .map(|x| x.unwrap())
         .filter(|x| !x.is_empty())
@@ -11,7 +11,7 @@ fn read_input() -> Vec<Vec<i32>> {
                 .map(|i| i.parse::<i32>().unwrap())
                 .collect()
         })
-        .collect();
+        .collect()
 }
 
 fn is_safe_report(row: Vec<i32>) -> bool {
@@ -20,18 +20,18 @@ fn is_safe_report(row: Vec<i32>) -> bool {
     }
     for (left, right) in row.iter().tuple_windows() {
         let diff = (left - right).abs();
-        if diff < 1 || diff > 3 {
+        if !(1..=3).contains(&diff) {
             return false;
         }
     }
-    return true;
+    true
 }
 
 fn part_one(grid: Vec<Vec<i32>>) -> usize {
-    return grid
+    grid
         .iter()
         .filter(|row| is_safe_report(row.to_vec()))
-        .count();
+        .count()
 }
 
 fn part_two(grid: Vec<Vec<i32>>) -> usize {
