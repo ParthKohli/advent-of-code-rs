@@ -51,7 +51,7 @@ fn calculate_score_and_rating(grid: &Grid) -> (i32, i32) {
                 {
                     let neighbour_entry =
                         walks.get(&(neighbour_row, neighbour_col)).unwrap().clone();
-                    let entry = walks.entry((row, col)).or_insert(Default::default());
+                    let entry = walks.entry((row, col)).or_default();
                     entry.0.extend(neighbour_entry.0);
                     entry.1 += neighbour_entry.1;
                 }
