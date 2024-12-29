@@ -11,7 +11,7 @@ fn read_grid() -> Vec<Vec<char>> {
     lines
 }
 
-fn part_one(grid: &Vec<Vec<char>>) -> i32 {
+fn part_one(grid: &[Vec<char>]) -> i32 {
     let rows = grid.len() as i32;
     let cols = grid[0].len() as i32;
 
@@ -34,15 +34,13 @@ fn part_one(grid: &Vec<Vec<char>>) -> i32 {
     {
         let word: String = (0..4)
             .map(|step| {
-                return (
+                (
                     start_row + step * row_direction,
                     start_col + step * col_direction,
-                );
+                )
             })
             .filter(|&(x, y)| x >= 0 && x < rows && y >= 0 && y < cols)
-            .map(&|(x, y)| -> char {
-                return grid[x as usize][y as usize];
-            })
+            .map(&|(x, y)| -> char { grid[x as usize][y as usize] })
             .collect();
         if word == "XMAS" {
             res += 1
@@ -52,11 +50,7 @@ fn part_one(grid: &Vec<Vec<char>>) -> i32 {
     res
 }
 
-fn is_direction_valid(
-    grid: &Vec<Vec<char>>,
-    (row, col): (i32, i32),
-    direction: (i32, i32),
-) -> bool {
+fn is_direction_valid(grid: &[Vec<char>], (row, col): (i32, i32), direction: (i32, i32)) -> bool {
     let (row_direction, col_direction) = direction;
 
     let word: String = (-1..=1)
@@ -64,10 +58,10 @@ fn is_direction_valid(
         .map(|(cell_x, cell_y)| grid[cell_x as usize][cell_y as usize])
         .collect();
 
-    return word == "MAS" || word == "SAM";
+    word == "MAS" || word == "SAM"
 }
 
-fn part_two(grid: &Vec<Vec<char>>) -> i32 {
+fn part_two(grid: &[Vec<char>]) -> i32 {
     let rows = grid.len() as i32;
     let cols = grid.len() as i32;
 
@@ -76,7 +70,7 @@ fn part_two(grid: &Vec<Vec<char>>) -> i32 {
     for (middle_row, middle_col) in (1..(rows - 1)).cartesian_product(1..(cols - 1)) {
         if directions
             .iter()
-            .all(|&direction| is_direction_valid(&grid, (middle_row, middle_col), direction))
+            .all(|&direction| is_direction_valid(grid, (middle_row, middle_col), direction))
         {
             res += 1
         }
