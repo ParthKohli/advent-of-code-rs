@@ -80,13 +80,13 @@ impl RegionSpec {
                     let current_region_neighbours: HashSet<(i32, i32)> =
                         neighbours((fence_row, fence_col), true)
                             .into_iter()
-                            .filter(|neighbour| self.region_cells.contains(&neighbour))
+                            .filter(|neighbour| self.region_cells.contains(neighbour))
                             .collect::<HashSet<_>>();
 
                     let next_region_neighbours: HashSet<(i32, i32)> =
                         neighbours((next_row, next_col), true)
                             .into_iter()
-                            .filter(|neighbour| self.region_cells.contains(&neighbour))
+                            .filter(|neighbour| self.region_cells.contains(neighbour))
                             .collect::<HashSet<_>>();
 
                     let mut region_compatible = false;
@@ -137,7 +137,7 @@ fn calculate_prices(grid: &Grid) -> (u64, u64) {
     let mut part_one_price = 0;
     let mut part_two_price = 0;
     for (row, col) in (0..rows).cartesian_product(0..cols) {
-        let region_char = grid.raw_grid[row as usize][col as usize];
+        let region_char = grid.raw_grid[row][col];
         let (row, col) = (row as i32 * 2, col as i32 * 2);
         if visited.contains(&(row, col)) {
             continue;
@@ -167,7 +167,7 @@ fn calculate_prices(grid: &Grid) -> (u64, u64) {
                 } else {
                     region_spec.perimeter += 1;
                     // Fence cells are at half distance
-                    let fence_cell = (cell_row as i32 + d_row / 2, cell_col as i32 + d_col / 2);
+                    let fence_cell = (cell_row + d_row / 2, cell_col + d_col / 2);
                     region_spec.fence_cells.insert(fence_cell);
                 }
             }
