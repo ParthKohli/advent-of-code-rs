@@ -109,7 +109,7 @@ impl ShortestSequences {
 
         for path in paths {
             let mut path_seq_len = 0;
-            for (c1, c2) in path.chars().into_iter().tuple_windows() {
+            for (c1, c2) in path.chars().tuple_windows() {
                 let source = self.arrows.char_to_key[&c1];
                 let dest = self.arrows.char_to_key[&c2];
                 let seq_len = self.sequence_length(LayoutType::Arrows, source, dest, level - 1);
