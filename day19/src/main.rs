@@ -19,10 +19,10 @@ fn read_input() -> (Vec<String>, Vec<String>) {
         .filter(|line| !line.is_empty())
         .collect();
 
-    return (patterns, targets);
+    (patterns, targets)
 }
 
-fn possibilities(patterns: &Vec<String>, target: &String) -> u64 {
+fn possibilities(patterns: &Vec<String>, target: &str) -> u64 {
     let mut ways = vec![0; target.len() + 1];
     ways[0] = 1;
     for prefix in 0..=target.len() {
