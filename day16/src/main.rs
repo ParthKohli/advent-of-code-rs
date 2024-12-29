@@ -25,7 +25,7 @@ impl ShortestPaths {
         let mut distance_heap = BinaryHeap::new();
         let mut cell_direction_distance: HashMap<(Cell, Direction), u64> = HashMap::new();
 
-        distance_heap.push(Reverse((0 as u64, source, initial_direction)));
+        distance_heap.push(Reverse((0_u64, source, initial_direction)));
 
         while let Some(Reverse(cheapest)) = distance_heap.pop() {
             let (distance, (row, col), direction) = cheapest;
@@ -115,20 +115,17 @@ fn part_one(grid: &ShortestPaths, source: Cell, destination: Cell) -> Option<(u6
     let distances = grid.calculate(source, Direction::Right);
     Direction::iter()
         .map(|direction| (distances.get(&(destination, direction)), direction))
-        .filter_map(|(dist, dir)| match dist {
-            None => None,
-            Some(dist) => Some((*dist, dir)),
-        })
+        .filter_map(|(dist, dir)| dist.map(|dist| (*dist, dir)))
         .min()
 }
 
 fn part_two(grid: &ShortestPaths) -> usize {
-    let (start_to_end, final_direction) = part_one(&grid, grid.start, grid.end).unwrap();
+    let (start_to_end, final_direction) = part_one(grid, grid.start, grid.end).unwrap();
     let start_distances = grid.calculate(grid.start, Direction::Right);
     let end_distances = grid.calculate(grid.end, final_direction.opp());
     let mut res = 0;
     let (rows, cols) = (grid.grid.len(), grid.grid[0].len());
-    for (row, col) in (0..rows as usize).cartesian_product(0..cols as usize) {
+    for (row, col) in (0..rows).cartesian_product(0..cols) {
         if grid.grid[row][col] != '#' {
             let mut is_good_tile = false;
             for direction in Direction::iter() {
