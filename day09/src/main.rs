@@ -15,7 +15,7 @@ struct Block {
     starting_index: u64,
 }
 
-fn part_one(disk_map: &String) -> u64 {
+fn part_one(disk_map: &str) -> u64 {
     let mut free_blocks: Vec<u64> = Vec::new();
     let mut occupied_blocks: Vec<(u64, u64)> = Vec::new();
     let mut seen_blocks_count: u64 = 0;
@@ -40,7 +40,7 @@ fn part_one(disk_map: &String) -> u64 {
     for zip_element in occupied_back_iter.zip_longest(free_blocks) {
         match zip_element {
             itertools::EitherOrBoth::Left(&(occupied_block, occupied_block_file_index)) => {
-                checksum += occupied_block * (occupied_block_file_index as u64);
+                checksum += occupied_block * occupied_block_file_index;
             }
             itertools::EitherOrBoth::Both(
                 &(occupied_block, occupied_block_file_index),
@@ -56,7 +56,7 @@ fn range_sum(start: u64, end: u64) -> u64 {
     ((start + end) * (end - start + 1)) / 2
 }
 
-fn part_two(disk_map: &String) -> u64 {
+fn part_two(disk_map: &str) -> u64 {
     let mut blocks: Vec<Block> = Vec::new();
     let mut seen_indices = 0;
     for (i, block_size) in disk_map.chars().enumerate() {
@@ -83,8 +83,7 @@ fn part_two(disk_map: &String) -> u64 {
         if let Some(first_suitable_block) = blocks
             .iter_mut()
             .filter(|block| block.block_type == BlockType::Free)
-            .filter(|block| block.block_size >= occupied_block.block_size)
-            .next()
+            .find(|block| block.block_size >= occupied_block.block_size)
         {
             if first_suitable_block.starting_index < occupied_block.starting_index {
                 found_match = true;
