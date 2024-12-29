@@ -24,7 +24,7 @@ fn part_two(lines: &Vec<String>) -> i64 {
     let mut res: i64 = 0;
     let mut enabled: bool = true;
     for s in lines {
-        let matches = outer_re.find_iter(&s).map(|m| m.as_str());
+        let matches = outer_re.find_iter(s).map(|m| m.as_str());
         for found in matches {
             match found {
                 "do()" => {
