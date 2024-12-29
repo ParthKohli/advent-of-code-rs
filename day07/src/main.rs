@@ -60,7 +60,7 @@ fn check_possible(
     possible_values.contains(&equation.result)
 }
 
-fn part_one(equations: &Vec<Equation>) -> u64 {
+fn part_one(equations: &[Equation]) -> u64 {
     equations
         .iter()
         .filter(|equation| check_possible(equation, part_one_next_candidates))
@@ -68,7 +68,7 @@ fn part_one(equations: &Vec<Equation>) -> u64 {
         .sum()
 }
 
-fn part_two(equations: &Vec<Equation>) -> u64 {
+fn part_two(equations: &[Equation]) -> u64 {
     equations
         .iter()
         .filter(|equation| check_possible(equation, part_two_next_candidates))
