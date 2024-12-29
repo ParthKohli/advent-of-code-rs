@@ -25,7 +25,7 @@ fn evolve_number(num: u64) -> Vec<u64> {
 /* Written for part 1. */
 fn evolve_sequence_naive(seq: Vec<u64>) -> Vec<u64> {
     seq.into_iter()
-        .map(|num| evolve_number(num))
+        .map(evolve_number)
         .collect::<Vec<_>>()
         .concat()
 }
