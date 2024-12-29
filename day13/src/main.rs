@@ -89,10 +89,7 @@ fn calculate_cost(machines: &Vec<Machine>) -> i64 {
                 }
             }
         }
-        res += match minimum_cost {
-            None => 0,
-            Some(cost) => cost,
-        }
+        res += minimum_cost.unwrap_or_default()
     }
     res
 }
@@ -108,9 +105,9 @@ fn calculate_cost_smart(machines: &Vec<Machine>) -> i64 {
             x = Dx / D = (ed - cf) / (ad - bc)
             y = Dy / D = (af - be) / (ad - bc)
         */
-        let (a, b) = (machine.buttons.0.dx as i64, machine.buttons.0.dy as i64);
-        let (c, d) = (machine.buttons.1.dx as i64, machine.buttons.1.dy as i64);
-        let (e, f) = (machine.prize.x as i64, machine.prize.y as i64);
+        let (a, b) = (machine.buttons.0.dx, machine.buttons.0.dy);
+        let (c, d) = (machine.buttons.1.dx, machine.buttons.1.dy);
+        let (e, f) = (machine.prize.x, machine.prize.y);
 
         let det = a * d - b * c;
         if det != 0 {
@@ -124,10 +121,7 @@ fn calculate_cost_smart(machines: &Vec<Machine>) -> i64 {
         } else {
             panic!();
         }
-        res += match minimum_cost {
-            None => 0,
-            Some(cost) => cost,
-        }
+        res += minimum_cost.unwrap_or_default()
     }
     res
 }
@@ -137,7 +131,7 @@ fn part_two(machines: &mut Vec<Machine>) -> i64 {
         machine.prize.x += 10000000000000;
         machine.prize.y += 10000000000000;
     }
-    calculate_cost_smart(&machines)
+    calculate_cost_smart(machines)
 }
 
 /*
