@@ -67,7 +67,7 @@ fn part_two(grid: &Grid) -> usize {
             }
             let dx = c2.0 - c1.0;
             let dy = c2.1 - c1.1;
-            let gcd = (dx.abs() as u32).gcd(dy.abs() as u32) as i32;
+            let gcd = dx.unsigned_abs().gcd(dy.unsigned_abs()) as i32;
             let dx = dx / gcd;
             let dy = dy / gcd;
             let dim = max(rows, cols) as i32;
