@@ -33,7 +33,7 @@ struct GridWalk {
     grid: Grid,
 }
 
-fn dims(grid: &Vec<Vec<char>>) -> (usize, usize) {
+fn dims(grid: &[Vec<char>]) -> (usize, usize) {
     (grid.len(), grid[0].len())
 }
 
