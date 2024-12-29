@@ -88,7 +88,7 @@ fn part_one(network: &mut Network) -> i64 {
     for node_name in node_names.iter().rev() {
         // Opposite because we want to start with the most significant
         if node_name.starts_with("z") {
-            let value = network.resolve(&node_name);
+            let value = network.resolve(node_name);
             res = res * 2 + value;
         }
     }
