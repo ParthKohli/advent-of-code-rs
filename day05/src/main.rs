@@ -30,8 +30,7 @@ impl PageOrderBuilder {
         loop {
             let next_page = match indegree
                 .keys()
-                .filter(|page| *indegree.get(page).unwrap() == 0)
-                .next()
+                .find(|page| *indegree.get(page).unwrap() == 0)
             {
                 Some(v) => *v,
                 _ => {
@@ -72,9 +71,9 @@ pub struct PageOrder {
 }
 
 impl PageOrder {
-    pub fn validate_order(&self, order: &Vec<Page>) -> bool {
+    pub fn validate_order(&self, order: &[Page]) -> bool {
         let mut idx_in_order: HashMap<Page, usize> = HashMap::new();
-        for (idx, &page) in order.into_iter().enumerate() {
+        for (idx, &page) in order.iter().enumerate() {
             idx_in_order.insert(page, idx);
         }
 
@@ -82,8 +81,8 @@ impl PageOrder {
             .iter()
             .all(|(independent_page, dependent_page)| {
                 match (
-                    idx_in_order.get(&independent_page),
-                    idx_in_order.get(&dependent_page),
+                    idx_in_order.get(independent_page),
+                    idx_in_order.get(dependent_page),
                 ) {
                     (Some(u), Some(v)) => u < v,
                     _ => true,
@@ -91,7 +90,7 @@ impl PageOrder {
             })
     }
 
-    pub fn topological_reorder(&self, pages: &Vec<Page>) -> Vec<Page> {
+    pub fn topological_reorder(&self, pages: &[Page]) -> Vec<Page> {
         let pages: HashSet<&i32> = HashSet::from_iter(pages);
         let mut subgraph_order_builder = PageOrderBuilder::default();
         let filtered_edges = self
@@ -102,7 +101,7 @@ impl PageOrder {
             subgraph_order_builder.add_ordered_edge(*filtered_edge);
         }
         let subgraph_order = subgraph_order_builder.build();
-        return subgraph_order.topological_order;
+        subgraph_order.topological_order
     }
 }
 
@@ -132,7 +131,7 @@ fn parse_input() -> (PageOrder, Vec<Vec<Page>>) {
     (page_order_builder.build(), orderings)
 }
 
-fn part_one(page_order: &PageOrder, orderings: &Vec<Vec<Page>>) -> i64 {
+fn part_one(page_order: &PageOrder, orderings: &[Vec<Page>]) -> i64 {
     orderings
         .iter()
         .filter(|ordering| page_order.validate_order(ordering))
@@ -140,7 +139,7 @@ fn part_one(page_order: &PageOrder, orderings: &Vec<Vec<Page>>) -> i64 {
         .sum()
 }
 
-fn part_two(page_order: &PageOrder, orderings: &Vec<Vec<Page>>) -> i64 {
+fn part_two(page_order: &PageOrder, orderings: &[Vec<Page>]) -> i64 {
     orderings
         .iter()
         .filter(|ordering| !page_order.validate_order(ordering))
