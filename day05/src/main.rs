@@ -27,17 +27,10 @@ impl PageOrderBuilder {
 
         let mut topological_order: Vec<Page> = Vec::new();
 
-        loop {
-            let next_page = match indegree
-                .keys()
-                .find(|page| *indegree.get(page).unwrap() == 0)
-            {
-                Some(v) => *v,
-                _ => {
-                    break;
-                }
-            };
-
+        while let Some(&next_page) = indegree
+            .keys()
+            .find(|page| *indegree.get(page).unwrap() == 0)
+        {
             topological_order.push(next_page);
             indegree.remove(&next_page);
 
