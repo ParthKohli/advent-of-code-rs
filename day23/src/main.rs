@@ -1,4 +1,3 @@
-use core::time;
 use std::{
     cmp::max,
     collections::{BTreeMap, HashSet},
@@ -27,11 +26,11 @@ impl NetworkBuilder {
         for (a, b) in self.edges.iter() {
             adjacent_vertices
                 .entry(a.clone())
-                .or_insert(Default::default())
+                .or_default()
                 .insert(b.clone());
             adjacent_vertices
                 .entry(b.clone())
-                .or_insert(Default::default())
+                .or_default()
                 .insert(a.clone());
         }
         Network {
@@ -87,7 +86,7 @@ fn max_clique_search<'a>(
     if remaining_vertices.is_empty() {
         if current_clique.len() >= best_clique.len() {
             best_clique.clear();
-            best_clique.extend_from_slice(&current_clique);
+            best_clique.extend_from_slice(current_clique);
         }
         return res;
     }
@@ -132,7 +131,7 @@ fn part_two(network: &Network) -> String {
     vertices.sort();
     let mut best_clique = Vec::new();
     let _ = max_clique_search(
-        &network,
+        network,
         &mut Vec::new(),
         &mut best_clique,
         &vertices,
