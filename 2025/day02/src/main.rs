@@ -27,34 +27,29 @@ fn is_periodic(v: &str, d: usize) -> bool {
     true
 }
 
-fn part_one(ranges: &Vec<(u64, u64)>) -> u64 {
+fn solve<F>(ranges: &[(u64, u64)], predicate: F) -> u64
+where
+    F: Fn(u64) -> bool,
+{
     let mut res = 0;
     for &(l, r) in ranges {
-        res += (l..=r)
-            .filter(|&x| {
-                let s = x.to_string();
-                if s.len() % 2 == 0 {
-                    is_periodic(&s, s.len() / 2)
-                } else {
-                    false
-                }
-            })
-            .sum::<u64>();
+        res += (l..=r).filter(|&x| predicate(x)).sum::<u64>();
     }
     res
 }
 
-fn part_two(ranges: &Vec<(u64, u64)>) -> u64 {
-    let mut res = 0;
-    for &(l, r) in ranges {
-        res += (l..=r)
-            .filter(|x| {
-                let s = x.to_string();
-                (1..s.len()).any(|d| is_periodic(&s, d))
-            })
-            .sum::<u64>();
-    }
-    res
+fn part_one(ranges: &[(u64, u64)]) -> u64 {
+    solve(ranges, |x| {
+        let s = x.to_string();
+        s.len() % 2 == 0 && is_periodic(&s, s.len() / 2)
+    })
+}
+
+fn part_two(ranges: &[(u64, u64)]) -> u64 {
+    solve(ranges, |x| {
+        let s = x.to_string();
+        (1..s.len()).any(|d| is_periodic(&s, d))
+    })
 }
 
 fn main() {
