@@ -9,11 +9,11 @@ fn parse_points() -> Vec<Point> {
         .map(|line| line.unwrap())
         .take_while(|line| !line.is_empty())
         .map(|line| {
-            let mut parts = line.split(',');
+            let mut parts = line.split(',').map(|part| part.parse::<i64>().unwrap());
             (
-                parts.next().unwrap().parse().unwrap(),
-                parts.next().unwrap().parse().unwrap(),
-                parts.next().unwrap().parse().unwrap(),
+                parts.next().unwrap(),
+                parts.next().unwrap(),
+                parts.next().unwrap(),
             )
         })
         .collect()
@@ -38,9 +38,9 @@ fn solve(points: Vec<Point>) -> (u64, i64) {
     for (idx, &(_, i, j)) in dists.iter().enumerate() {
         let (old_i, old_j) = (comp[i], comp[j]);
         if old_i != old_j {
-            for v in 0..points.len() {
-                if comp[v] == old_i || comp[v] == old_j {
-                    comp[v] = min(old_i, old_j);
+            for cv in comp.iter_mut() {
+                if *cv == old_i || *cv == old_j {
+                    *cv = min(old_i, old_j);
                 }
             }
         }
